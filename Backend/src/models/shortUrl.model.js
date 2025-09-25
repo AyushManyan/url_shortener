@@ -26,6 +26,6 @@ const shortUrlSchema = new mongoose.Schema({
     }
 });
 
-const ShortUrl = mongoose.model("ShortUrl", shortUrlSchema);
+const shortUrl = mongoose.model("shortUrl", shortUrlSchema);
 
-export default ShortUrl;
+export default shortUrl;
