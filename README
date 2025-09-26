@@ -1,0 +1,198 @@
+# URL Shortener Backend
+
+A robust URL shortener service built with Node.js, Express, and MongoDB that allows users to create short URLs and track click analytics.
+
+## Features
+
+- ✨ Shorten long URLs to compact, shareable links
+- 📊 Click tracking and analytics
+- 🏗️ Clean MVC architecture with separate layers (Controllers, Services, DAO)
+- 🔗 Automatic URL redirection
+- 🚀 Fast and lightweight using nanoid for URL generation
+- 📱 RESTful API design
+- ⚠️ Comprehensive error handling with custom error classes
+- 🔄 Try-catch wrapper for async operations
+
+## Tech Stack
+
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB with Mongoose ODM
+- **URL Generation**: nanoid library
+- **Environment Management**: dotenv
+
+## Project Structure
+
+```
+Backend/
+├── src/
+│   ├── config/
+│   │   └── mongo.config.js      # Database configuration
+│   ├── controllers/
+│   │   └── shortUrl.controller.js # Request handlers
+│   ├── dao/
+│   │   └── shortUrl.js          # Data access layer
+│   ├── models/
+│   │   └── shortUrl.model.js    # MongoDB schemas
+│   ├── routes/
+│   │   └── shortUrl.route.js    # API routes
+│   ├── services/
+│   │   └── shortUrl.service.js  # Business logic
+│   └── utils/
+│       ├── helper.js            # Utility functions
+│       ├── errorHandler.js      # Custom error classes & handler
+│       └── tryCatchWrapper.js   # Async error wrapper
+├── app.js                       # Main application file
+├── package.json
+└── .env                         # Environment variables
+```
+
+## Installation & Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repository-url>
+   cd "url shortener/Backend"
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Configuration**
+   Create a `.env` file in the Backend directory:
+   ```env
+   MONGO_URI=your_mongodb_connection_string
+   APP_URL=http://localhost:3000/
+   ```
+
+4. **Run the application**
+   ```bash
+   # Development mode
+   npm run dev
+   
+   # Or start normally
+   node app.js
+   ```
+
+The server will start on `http://localhost:3000`
+
+## Database Schema
+
+### ShortUrl Model
+```javascript
+{
+  full_url: String (required),     // Original long URL
+  short_url: String (required),    // Generated short code (unique, indexed)
+  clicks: Number (default: 0),     // Click count
+  user: ObjectId (optional),       // Reference to User (for future use)
+  createdAt: Date (default: now)   // Creation timestamp
+}
+```
+
+## API Endpoints
+
+### Create Short URL
+- **Endpoint**: `POST /api/create`
+- **Description**: Creates a shortened URL
+- **Request Body**:
+  ```json
+  {
+    "url": "https://example.com/very-long-url"
+  }
+  ```
+- **Response**: 
+  ```
+  http://localhost:3000/abc123
+  ```
+
+### URL Redirection
+- **Endpoint**: `GET /:id`
+- **Description**: Redirects to original URL and increments click count
+- **Example**: `GET /abc123` → redirects to original URL
+- **Error Response**: 404 if short URL not found
+
+## Features Overview
+
+### Architecture Layers
+
+1. **Controllers** ([`shortUrl.controller.js`](Backend/src/controllers/shortUrl.controller.js)): Handle HTTP requests and responses with async wrapper
+2. **Services** ([`shortUrl.service.js`](Backend/src/services/shortUrl.service.js)): Contain business logic for URL creation
+3. **DAO** ([`shortUrl.js`](Backend/src/dao/shortUrl.js)): Data access operations with error handling
+4. **Models** ([`shortUrl.model.js`](Backend/src/models/shortUrl.model.js)): MongoDB schema with unique constraints
+5. **Utils**: 
+   - [`helper.js`](Backend/src/utils/helper.js): Utility functions like nanoid generation
+   - [`errorHandler.js`](Backend/src/utils/errorHandler.js): Custom error classes and middleware
+   - [`tryCatchWrapper.js`](Backend/src/utils/tryCatchWrapper.js): Async error wrapper
+
+### Key Functionalities
+
+- **URL Shortening**: Generates 6-character unique IDs using nanoid
+- **Click Tracking**: Automatically increments click count on each redirect using `findOneAndUpdate`
+- **Error Handling**: 
+  - Custom error classes (AppError, NotFoundError, ConflictError, BadRequestError, UnauthorizedError)
+  - Global error handler middleware
+  - Duplicate URL conflict detection (MongoDB error code 11000)
+- **Database Integration**: Uses MongoDB with Mongoose for data persistence and indexing
+
+### Error Handling System
+
+The application includes a comprehensive error handling system:
+
+- **Custom Error Classes**: AppError, NotFoundError, ConflictError, BadRequestError, UnauthorizedError
+- **Global Error Handler**: Centralized error processing with appropriate HTTP status codes
+- **Try-Catch Wrapper**: Automatically catches async errors in controllers
+- **Duplicate Detection**: Handles MongoDB duplicate key errors for short URLs
+
+## Development
+
+### Scripts
+- `npm run dev` - Start development server with nodemon
+- `npm test` - Run tests (not implemented yet)
+
+### Dependencies
+- `express` - Web framework
+- `mongoose` - MongoDB ODM
+- `dotenv` - Environment variable management
+- `nanoid` - Unique ID generation
+
+## Known Issues
+
+⚠️ **Bug in Service Layer**: The [`createShortUrlWithoutUser`](Backend/src/services/shortUrl.service.js) function currently saves a hardcoded short URL ("2IKaH3") instead of the generated one. This needs to be fixed:
+
+```javascript
+// Current (incorrect):
+await saveShortUrl("2IKaH3", url);
+
+// Should be:
+await saveShortUrl(shortUrl, url);
+```
+
+## Future Enhancements
+
+- [ ] Fix hardcoded short URL bug in service layer
+- [ ] User authentication and registration
+- [ ] User-specific URL management dashboard
+- [ ] Advanced analytics with detailed click tracking
+- [ ] Custom short URL aliases
+- [ ] URL expiration dates
+- [ ] Rate limiting implementation
+- [ ] Input validation middleware
+- [ ] API documentation with Swagger
+- [ ] Unit and integration tests
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the ISC License.
+
+---
+
+⚠️ **Note**: This project is currently under development. Some features may be incomplete or subject to change. Please check the Known Issues section for current bugs.
