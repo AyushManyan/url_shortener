@@ -116,14 +116,14 @@ The server will start on `http://localhost:3000`
 
 ### Architecture Layers
 
-1. **Controllers** ([`shortUrl.controller.js`](Backend/src/controllers/shortUrl.controller.js)): Handle HTTP requests and responses with async wrapper
-2. **Services** ([`shortUrl.service.js`](Backend/src/services/shortUrl.service.js)): Contain business logic for URL creation
-3. **DAO** ([`shortUrl.js`](Backend/src/dao/shortUrl.js)): Data access operations with error handling
-4. **Models** ([`shortUrl.model.js`](Backend/src/models/shortUrl.model.js)): MongoDB schema with unique constraints
+1. **Controllers** (`shortUrl.controller.js`): Handle HTTP requests and responses with async wrapper
+2. **Services** (`shortUrl.service.js`): Contain business logic for URL creation
+3. **DAO** (`shortUrl.js`): Data access operations with error handling
+4. **Models** (`shortUrl.model.js`): MongoDB schema with unique constraints
 5. **Utils**: 
-   - [`helper.js`](Backend/src/utils/helper.js): Utility functions like nanoid generation
-   - [`errorHandler.js`](Backend/src/utils/errorHandler.js): Custom error classes and middleware
-   - [`tryCatchWrapper.js`](Backend/src/utils/tryCatchWrapper.js): Async error wrapper
+   - `helper.js`: Utility functions like nanoid generation
+   - `errorHandler.js`: Custom error classes and middleware
+   - `tryCatchWrapper.js`: Async error wrapper
 
 ### Key Functionalities
 
@@ -158,11 +158,11 @@ The application includes a comprehensive error handling system:
 
 ## Known Issues
 
-⚠️ **Bug in Service Layer**: The [`createShortUrlWithoutUser`](Backend/src/services/shortUrl.service.js) function currently saves a hardcoded short URL ("2IKaH3") instead of the generated one. This needs to be fixed:
+⚠️ **Bug in Service Layer**: The `createShortUrlWithoutUser` function currently saves a hardcoded short URL ("2IKaH3") instead of the generated one. This needs to be fixed:
 
 ```javascript
 // Current (incorrect):
-await saveShortUrl("2IKaH3", url);
+await saveShortUrl(shortUrl, url);
 
 // Should be:
 await saveShortUrl(shortUrl, url);

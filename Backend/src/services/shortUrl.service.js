@@ -3,7 +3,7 @@ import { generateNanoid } from "../utils/helper.js";
 export const createShortUrlWithoutUser = async (url)=>{
     const shortUrl = generateNanoid();
     if(!shortUrl) throw new Error("Could not generate short URL");
-    await saveShortUrl("2IKaH3",url);
+    await saveShortUrl(shortUrl,url);
     return shortUrl;
 }
 export const createShortUrlWithUser = async (url,userId)=>{
